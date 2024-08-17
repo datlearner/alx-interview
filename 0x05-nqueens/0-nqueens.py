@@ -1,60 +1,69 @@
+#!/usr/bin/python3
+
+"""
+Program that solves the `N` queens problem using a backtracking algorithm to
+place N non-attacking queens on an N x N chessboard
+"""
+
 import sys
 
-def is_safe(board, row, col, n):
-    # Check this row on left side
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
-    
-    # Check upper diagonal on left side
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-    
-    # Check lower diagonal on left side
-    for i, j in zip(range(row, n, 1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-    
-    return True
 
-def solve_nqueens(board, col, n):
-    if col >= n:
-        print_board(board, n)
-        return
-    
-    for i in range(n):
-        if is_safe(board, i, col, n):
-            board[i][col] = 1
-            solve_nqueens(board, col + 1, n)
-            board[i][col] = 0
+if len(sys.argv) > 2 or len(sys.argv) < 2:
+    print("Usage: nqueens N")
+    exit(1)
 
-def print_board(board, n):
-    solution = []
-    for i in range(n):
-        for j in range(n):
-            if board[i][j] == 1:
-                solution.append([i, j])
-    print(solution)
+if not sys.argv[1].isdigit():
+    print("N must be a number")
+    exit(1)
 
-def nqueens(n):
-    board = [[0 for _ in range(n)] for _ in range(n)]
-    solve_nqueens(board, 0, n)
+if int(sys.argv[1]) < 4:
+    print("N must be at least 4")
+    exit(1)
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
+n = int(sys.argv[1])
 
-    try:
-        n = int(sys.argv[1])
-    except ValueError:
-        print("N must be a number")
-        sys.exit(1)
 
-    if n < 4:
-        print("N must be at least 4")
-        sys.exit(1)
+def board(size, row=0, column=[], forward_diagonal=[], backward_diagonal=[]):
+    """
+    Prints the chess board on the screen
 
-    nqueens(n)
+    Parameters
+        size: int, Size of the board
+        row: int, Current row index
+        column: list, list of column indexes
+        forward_diagonal: list, list of forward diagonal indexes
+        backward_diagonal: list, list of backward diagonal indexes
+    """
 
+    if row < size:
+        for i in range(size):
+            if i not in column and row + i not in forward_diagonal and \
+                  row - i not in backward_diagonal:
+                yield from board(
+                    size, row + 1, column + [i],
+                    forward_diagonal + [row + i], backward_diagonal + [row - i]
+                    )
+    else:
+        yield column
+
+
+def solve(size):
+    """
+    Solves the `N` queens problem using a backtracking algorithm
+
+    Parameters
+        size: int, Size of the board
+    """
+
+    k = []
+    i = 0
+    for solution in board(size, 0):
+        for s in solution:
+            k.append([i, s])
+            i += 1
+        print(k)
+        k = []
+        i = 0
+
+
+solve(n)
