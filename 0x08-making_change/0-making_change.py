@@ -20,3 +20,4 @@ def makeChange(coins, total):
             return used_coins
     return -1
 
+
