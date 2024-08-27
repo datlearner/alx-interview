@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 '''0x09. Island Perimeter'''
 
