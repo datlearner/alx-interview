@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """
 this module defines the function isWinner
